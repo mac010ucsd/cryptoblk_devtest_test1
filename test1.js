@@ -2,17 +2,12 @@ const {ethers} = require("ethers")
 const contractabi = require("./contractabi.json")
 const config = require("./config.json")
 
-console.log("contract status %s", contractabi.status)
-
-provider = new ethers.providers.JsonRpcProvider("https://data-seed-prebsc-1-s1.binance.org:8545")
-
-wallet = ethers.Wallet.fromMnemonic(config["my_mnemonic"])
-wallet = wallet.connect(provider)
-
-console.log("connected my wallet!")
-
+providerURL = "https://data-seed-prebsc-1-s1.binance.org:8545"
 contractAddr = "0x715696b3AEA58920E1F5A4cF161e843405D2d384"
 
+provider = new ethers.providers.JsonRpcProvider(providerURL)
+wallet = ethers.Wallet.fromMnemonic(config["my_mnemonic"])
+wallet = wallet.connect(provider)
 mycontract = new ethers.Contract(contractAddr, contractabi.result, wallet)
 
 mycontract.name().then((x) => {console.log("contract name %s", x)
@@ -24,5 +19,5 @@ mycontract.name().then((x) => {console.log("contract name %s", x)
 
 	mycontract.transfer(destination_addr, converted_amount).then(() => {
 		console.log("transfer success")
-	})
-})
+	}).catch(() => {console.log("could not transfer")})
+}).catch(() => {console.log("could not connect")})
